@@ -1,0 +1,9 @@
+This directory contains analysis files and a structured dataset 
+pertaining to a study that is monitored by the FDA. 
+It includes a readme.md file and two folders, each with a single file. 
+The directory contains a CSV file with a COVID-19 vaccine and mortality dataset, 
+which offers crucial information for assessing how well the vaccine lowers 
+mortality rates among those infected with the virus. A QMD file with an 
+analysis of the dataset and insights into the study's conclusions is also 
+available. The directory aids the FDA in evaluating how immunizations affected 
+pandemic-related public health outcomes.
