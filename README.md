@@ -1,5 +1,5 @@
-# STAT184-HW-Template
- STAT184 Github Day 1 HW Template
+# STAT184-Assignment#12
+ STAT184 Github Assignment 12
 
 
 ## Introduction
@@ -19,6 +19,7 @@ Highlighted key trends in the dataset, such as higher mortality rates in older, 
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+
 mortality_rates_vaccine_status_age <- data %>%
   group_by(age_group, vaccine_status) %>%
   summarize(
@@ -26,6 +27,7 @@ mortality_rates_vaccine_status_age <- data %>%
     Deaths = sum(outcome == "death"),
     mortality_Rate = Deaths / Total
   )
+
  ggplot(mortality_rates_vaccine_status_age, aes(x = age_group, y = mortality_Rate, fill = vaccine_status)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Mortality Rates by Age and Vaccine Status", 
