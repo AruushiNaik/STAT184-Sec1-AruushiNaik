@@ -15,6 +15,7 @@ Created bar plots to compare mortality rates across age groups and vaccine statu
 Highlighted key trends in the dataset, such as higher mortality rates in older, unvaccinated individuals.
 
 ### Code 
+```
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -31,6 +32,7 @@ mortality_rates_vaccine_status_age <- data %>%
        x = "age_group", 
        y = "Mortality Rate") +
   theme_minimal()
+```
 
 ## Results and Conclusion
 The key findings from the analysis are as follows:
