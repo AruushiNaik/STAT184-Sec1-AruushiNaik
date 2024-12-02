@@ -42,6 +42,7 @@ The key findings from the analysis are as follows:
 2.  Individuals under 50 have low mortality rates overall. 
 3.  While the vaccine generally reduces the mortality rate, its effectiveness appears to vary by age.
 4.  Age continues to remain a crucial factor in determining mortality risk.
+   
 This analysis underscores the importance of targeted vaccination efforts for older populations to mitigate COVID-19 risks.
 <img width="703" alt="image" src="https://github.com/user-attachments/assets/e42d347d-259a-4c1d-a99f-60453458c67a">
 
