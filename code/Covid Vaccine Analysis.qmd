@@ -1,0 +1,204 @@
+---
+title: "Covid Vaccine Analysis"
+format:
+  html:
+    code-fold: true
+    code-link: true
+author: Mariah the First of Charlottetown
+---
+
+# Analysis of COVID Vaccine Efficacy in Reducing Mortality Rate: An FDA Analysis
+
+![SARS-CoV-2 Virus](https://medlineplus.gov/images/COVID19_share.jpg) SARS-CoV-2
+
+Credits - https://medlineplus.gov/images/COVID19_share.jpg
+
+## Introduction
+
+COVID-19 is a respiratory illness caused by the SARS-CoV-2 virus, first identified in late 2019. It spreads through respiratory droplets, causing symptoms like fever, cough, and difficulty breathing. While many cases are mild, severe infections can lead to pneumonia, organ failure, and death, particularly in older and high-risk populations.
+
+This study monitored by FDA aims to evaluate the effectiveness of COVID-19 vaccinations in reducing the mortality rate among individuals infected with the COVID-19 virus. As millions of people have been vaccinated and subsequently exposed to the virus, this study seeks to determine whether the vaccine plays a significant role in lowering the risk of death from COVID-19.
+
+## The Question is
+
+#### Did the COVID vaccine reduce the mortality rate?
+
+## Data set Overview
+
+To answer the above question, we are going to analyze a COVID-19 observational study.
+
+```{r}
+#| echo: False
+#| message: False
+
+# Load the packages 
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+The data set of the observational study contains information on various individuals from all age groups, including their vaccine status and the outcome of their COVID infection - death or survival.
+
+```{r}
+#| echo: False
+
+# Load the data from the provided URL
+url <- "https://www.openintro.org/data/csv/simpsons_paradox_covid.csv"
+data <- read.csv(url)
+```
+
+The table displayed below has been created using the head() function and shows the first 6 values of the data set. It provides a quick preview of the structure, column names, and types of values in the data set, which is useful for understanding the data's general format and contents.
+
+```{r}
+#| echo: False
+
+# Preview the data
+head(data)
+```
+
+We also generated another table which is the summary table using the summary() function. The table generated below is a summary of each column in the data dataframe.
+
+```{r}
+#| echo: False
+
+# Summarize the data
+summary(data)
+```
+
+Based on the above tables, it can be inferred that the data set contains 268166 cases of individuals and 3 varibles based on which the analysis will be carried out. The rows contain of individuals while the columns include age_group, vaccine_status, and outcome are included in the data set. The vaccine_status column specifies whether the person was vaccinated or not, while the outcome columns tells whether the person has died or survived.
+
+## Exploratory Data Analysis (EDA)
+
+### Mortality Rates by Vaccine Status
+
+We begin the analysis by first calculating the mortality rate based on vaccine status of the individuals. This analysis will give us an overall idea of how vaccination status of the individuals correlates with the likelihood of death due to COVID-19.
+
+```{r}
+#| echo: False
+table(data$vaccine_status, data$outcome)
+```
+
+The above table shows the frequency of each combination of vaccine_status (e.g. vaccinated or unvaccinated) and outcome (e.g. survived or death). The rows in the table represent vaccine status, columns represent outcomes, and each cell displays the count for that category combination.
+
+To further analyze the data set, we will group data based on vaccine_status to compare the total count of vaccinated v/s unvaccinated individuals. By grouping this way, we can calculate the total cases and determine COVID-related mortality rates for each group. The mortality rate would be calculated using the number of cases in each situation( vaccinated or unvaccinated)/ total number of cases. This would help us to assess the vaccine's impact on mortality in vaccinated and unvaccinated populations.
+
+```{r}
+#| echo: True 
+
+mortality_rates_vaccine <- data %>%
+  group_by(vaccine_status) %>%
+  summarize(
+    Total = n(),
+    Deaths = sum(outcome == "death"),
+    mortality_Rate = Deaths / Total
+  )
+ggplot(mortality_rates_vaccine, aes(x = vaccine_status, y = mortality_Rate)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Mortality Rates by Vaccine Status", 
+       x = "vaccine_status", 
+       y = "Mortality Rate") +
+  theme_minimal()
+```
+
+This above bar plot illustrates the mortality rate for vaccinated and unvaccinated groups in the data set. The bar plot displays these rates by vaccine status, showing how vaccination correlates with reduced mortality. As observed in the graph, The outcome shows a notable difference in mortality rates between vaccinated and unvaccinated groups. The data indicates a higher mortality rate among vaccinated individuals, raising concerns. This suggests that vaccination is not effective in reducing the likelihood of death from COVID-19, opposing the vaccine's role in decreasing mortality rate. This calls for further investigation.
+
+### Mortality Rates by Age Group
+
+Next, we examine how mortality rates vary by age group, as age is a known as a factor that influences COVID mortality rates. The idea behind this analysis is to figure out if age has a big role in the mortality rates of individuals. It can be hypothesized that older age groups, especially 50+ would have a higher mortality rate.
+
+In this analysis, we only use the columns that we require, like age_group and outcome, further grouping the table by age_group and then we can calculate the total cases and determine COVID-related mortality rates for each group. The mortality rate would be calculated using the number of cases in each situation (vaccinated or unvaccinated)/ total number of cases.
+
+```{r}
+mortality_rate_age <- data %>%
+  select(age_group, outcome) %>%
+  group_by(age_group) %>%
+  summarize(
+    Total = n(),
+    Deaths = sum(outcome == "death"),
+    mortality_Rate = Deaths / Total
+  )
+ggplot(mortality_rate_age, aes(x = age_group, y = mortality_Rate)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Mortality Rates by Age", 
+       x = "age_group", 
+       y = "Mortality Rate") +
+  theme_minimal()
+```
+
+The bar plot confirms that older age groups (50+) have significantly higher mortality rates, supporting the hypothesis that age increases vulnerability to severe COVID-19 outcomes. This trend reflects the heightened risk COVID-19 poses to older adults, likely due to age-related factors such as weaker immune response and potential comorbidities. Interestingly, despite vaccination, the mortality rate remains high in older groups, suggesting that while the vaccine may reduce severity, age remains a dominant factor. 
+
+### Distribution by vaccine_status, age_group
+
+The above analysis that we did suggested that the individuals who have been vaccinated and older groups who are 50 years or older are more vulnerable to death by COVID-19. However, it is also important for us to understand how the population is distributed across different age groups and vaccine statuses. This can help us assess whether there are any relations in the sample that could affect the mortality analysis.
+
+To assess the distribution, we select the age_group and vaccine_status columns and group them. Later we calculate the count based on their age group and vaccination status.
+
+```{r}
+#| echo: True
+
+applications_vaccine_status_age <- data %>%
+  select(age_group, vaccine_status) %>%
+  group_by(age_group, vaccine_status) %>%
+  summarize(
+    Total = n()
+  )
+ggplot(applications_vaccine_status_age, aes(x = age_group, y = Total, fill = vaccine_status)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Study Population by Age and Vaccine Status", 
+       x = "age_group", 
+       y = "Study population") +
+  theme_minimal()
+```
+
+This above bar plot visualizes the distribution of individuals based on their age group and vaccination status.The bar plot compares individuals across age groups and showing the proportion of vaccinated v/s unvaccinated individuals within each age group, helping identify any age-related sampling relations in the data set. This gives us insight into how the data is structured. The graph shows that individuals under 50 have higher vaccination rates compared to those over 50, indicating fewer older adults received the vaccine. This disparity could explain the higher COVID-19 mortality in older populations, as their lack of vaccination leaves them more vulnerable to severe outcomes. 
+
+### Mortality Rates by Vaccine Status and Age Group
+
+In our final analysis, we aim to explore how the COVID-19 vaccine’s effectiveness in reducing mortality rates varies across both age groups and vaccine statuses. Previous findings indicated that older populations have higher mortality rates, while vaccinated individuals appeared to have higher mortality rates. By examining both vaccinated and unvaccinated individuals across various age groups, we can better understand how the vaccine’s protective effects differ between younger and older individuals. This analysis is essential for determining whether the vaccine’s efficacy varies by age and if its benefits are equally distributed across age ranges.
+
+For this analysis, we have grouped by age_group and vaccine_status, then calculates the total number of individuals, the number of deaths, and the mortality rate (deaths/total) for each group.
+
+```{r}
+mortality_rates_vaccine_status_age <- data %>%
+  group_by(age_group, vaccine_status) %>%
+  summarize(
+    Total = n(),
+    Deaths = sum(outcome == "death"),
+    mortality_Rate = Deaths / Total
+  )
+```
+
+The table above contains the mortality rates for different combinations of age group and vaccine status.
+
+```{r}
+head(mortality_rates_vaccine_status_age)
+```
+
+This displays the first few rows of the resulting data set. The expected outcome is a summary table showing mortality rates for each age group and vaccine status combination.
+
+```{r}
+ggplot(mortality_rates_vaccine_status_age, aes(x = age_group, y = mortality_Rate, fill = vaccine_status)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Mortality Rates by Age and Vaccine Status", 
+       x = "age_group", 
+       y = "Mortality Rate") +
+  theme_minimal()
+```
+
+A bar plot is generated to visualize the mortality rates by both age group and vaccine status. The plot visually compares mortality rates across age groups and vaccine statuses, helping to assess if the vaccine's effect varies by age. As observed from the above plot, individuals aged 50 and above, particularly those who are unvaccinated, have a higher mortality rate compared to other groups. For individuals under 50, the mortality rates are relatively similar between vaccinated and unvaccinated groups, and both have lower mortality rates. 
+
+## Conclusion
+
+The above analysis of COVID-19 mortality rates by vaccine status and age group has provided valuable insights into how the vaccine affects mortality across different populations.
+
+The key findings from the analysis are as follows:
+
+1.  Individuals aged 50 and above, especially those who are unvaccinated, experience significantly higher mortality rates. This group is the most vulnerable to severe outcomes from COVID-19.
+
+2.  Individuals under 50, the difference in mortality rates between vaccinated and unvaccinated groups is minimal, with both groups having low mortality rates overall. 
+
+3.  While the vaccine generally reduces the mortality rate, its effectiveness appears to vary by age. In older individuals, the difference between vaccinated and unvaccinated individuals is more pronounced, indicating that vaccination is a critical tool for preventing severe outcomes in high-risk populations.
+
+4.  Age continues to remain a crucial factor in determining mortality risk, with older populations experiencing much higher mortality rates, regardless of vaccine status. 
+
+To conclude, the analysis confirms the efficacy of the COVID-19 vaccine, particularly for older adults, and highlights the importance of age in assessing COVID-19 mortality risks. It also suggests that vaccination programs should continue to focus on high-risk age groups to maximize public health benefits.
