@@ -3,7 +3,7 @@
 
 
 ## Introduction
-This repository explores COVID-19 data to analyze the efficacy of vaccines in reducing mortality rates. The main objective was to evaluate how age and vaccine status impact mortality, providing insights into vaccine effectiveness and age-related risks. The dataset also includes information on age groups, vaccination status, and COVID-19 outcomes, offering a comprehensive foundation to the analysis.
+This repository explores COVID-19 data to analyze the efficacy of vaccines in reducing mortality rates. The main goal of this research was to evaluate how age and vaccine status impact mortality rates, providing insights into vaccine effectiveness. The dataset also includes information on age groups, vaccination status, and COVID-19 outcomes, offering a comprehensive foundation to the analysis.
 
 ## Implementation 
 The analysis involved the following steps:
